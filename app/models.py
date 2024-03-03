@@ -246,6 +246,7 @@ class Post(SearchableMixin, db.Model):
     body = db.Column(db.String(140))
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    thread_id = db.Column(db.Integer, db.ForeignKey('thread.id'))  # Foreign key referenziert auf Thread.id
     language = db.Column(db.String(5))
 
     def __repr__(self):
@@ -291,3 +292,13 @@ class Task(db.Model):
     def get_progress(self):
         job = self.get_rq_job()
         return job.meta.get('progress', 0) if job is not None else 100
+
+class Thread(db.Model):   #neue Tabelle fuer threads 
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(255))
+    creation_date = db.Column(db.DateTime, default=datetime.utcnow)
+    last_update = db.Column(db.DateTime, default=datetime.utcnow)
+    creator_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+
+    def __repr__(self):
+        return '<Thread {}>'.format(self.title)
