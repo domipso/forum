@@ -1,16 +1,8 @@
-<!DOCTYPE html>
-<html lang="de">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Threads und Beiträge</title>
-</head>
-<body>
-    <!-- Benutzername im Titel -->
+{% extends "base.html" %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block app_content %}
     <h1>{{ _('Hi, %(username)s!', username=current_user.username) }}</h1>
-    {% if form %}
-    {{ wtf.quick_form(form) }}
-    
     <!-- Bereich zur Anzeige von Threads -->
     <div id="threads">
         <h2>Threads</h2>
@@ -24,7 +16,10 @@
             {% endfor %}
         </ul>
     </div>
-
+    {% if form %}
+    {{ wtf.quick_form(form) }}
+    <br>
+    {% endif %}
     <!-- Bereich zur Anzeige von Posts innerhalb eines Threads -->
     <div id="posts" style="display: none;">
         <h2 id="thread-title"></h2>
@@ -72,5 +67,4 @@
             postsDiv.style.display = 'block';
         }
     </script>
-</body>
-</html>
+{% endblock %}

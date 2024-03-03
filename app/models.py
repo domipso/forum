@@ -148,6 +148,11 @@ class User(UserMixin, PaginatedAPIMixin, db.Model):
         own = Post.query.filter_by(user_id=self.id)
         return followed.union(own).order_by(Post.timestamp.desc())
 
+    def all_threads(self):
+        threads = Thread.query.all()
+        threads = sorted(threads, key=lambda thread:thread.last_update)
+        return threads
+
     def get_reset_password_token(self, expires_in=600):
         return jwt.encode(
             {'reset_password': self.id, 'exp': time() + expires_in},
