@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block app_content %}
+    <h1>{{ _('Hi, %(username)s!', username=current_user.username) }}</h1>
+    <!-- Bereich zur Anzeige von Threads -->
+    <div id="threads">
+        <h2>Threads</h2>
+        <ul>
+            <!-- Hier werden die Threads aufgelistet -->
+            {% for thread in threads %}
+                <li>
+                    <!-- Jeder Thread ist ein Link, der die Posts dieses Threads lädt -->
+                    <a href="#" class="thread-link" data-thread-id="{{ thread.id }}">{{ thread.title }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% if form %}
+    {{ wtf.quick_form(form) }}
+    <br>
+    {% endif %}
+    <!-- Bereich zur Anzeige von Posts innerhalb eines Threads -->
+    <div id="posts" style="display: none;">
+        <h2 id="thread-title"></h2>
+        <!-- Hier werden die Posts des ausgewählten Threads angezeigt -->
+        <ul id="post-list"></ul>
+    </div>
+
+    <script>
+        // JavaScript, um die Posts anzuzeigen, wenn auf einen Thread geklickt wird
+        document.addEventListener('DOMContentLoaded', function() {
+            const threadLinks = document.querySelectorAll('.thread-link');
+            threadLinks.forEach(function(link) {
+                link.addEventListener('click', function(event) {
+                    event.preventDefault(); // Verhindert, dass der Link die Seite neu lädt
+                    const threadId = this.getAttribute('data-thread-id');
+                    loadPosts(threadId);
+                });
+            });
+        });
+
+        function loadPosts(threadId) {
+            // Hier sollte eine AJAX-Anfrage erfolgen, um die Posts für den angeklickten Thread abzurufen
+            // In diesem Beispiel wird stattdessen eine Dummy-Funktion verwendet, um Posts anzuzeigen
+            const posts = [
+                { id: 1, body: 'Beispiel-Beitrag 1' },
+                { id: 2, body: 'Beispiel-Beitrag 2' },
+                { id: 3, body: 'Beispiel-Beitrag 3' }
+            ];
+
+            // Posts in die Seite einfügen
+            const postList = document.getElementById('post-list');
+            postList.innerHTML = '';
+            posts.forEach(function(post) {
+                const listItem = document.createElement('li');
+                listItem.textContent = post.body;
+                postList.appendChild(listItem);
+            });
+
+            // Thread-Titel aktualisieren
+            const threadTitle = document.getElementById('thread-title');
+            threadTitle.textContent = 'Beiträge für Thread ' + threadId;
+
+            // Posts anzeigen
+            const postsDiv = document.getElementById('posts');
+            postsDiv.style.display = 'block';
+        }
+    </script>
+{% endblock %}

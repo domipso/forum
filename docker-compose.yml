@@ -15,3 +15,6 @@ services:
       context: .
       dockerfile: Dockerfile
     restart: always
+#container für proxy ngnix
+
+ 

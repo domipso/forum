@@ -51,6 +51,54 @@ def explore():
                            posts=posts.items, next_url=next_url,
                            prev_url=prev_url)
 
+@bp.route('/threads/<int:id>/posts', methods=['GET', 'POST'])
+@login_required
+def thread_posts(id):
+    # Thread anhand der ID aus der Datenbank abrufen oder 404-Fehler auslösen
+    thread = Thread.query.get_or_404(id)
+    # Erstellen eines PostFormulars
+    form = PostForm()
+    # Überprüfen, ob das Formular erfolgreich übermittelt wurde
+    if form.validate_on_submit():
+        # Erstellen eines neuen Posts aus den Formulardaten
+        post = Post(body=form.post.data, thread_id=id, author=current_user)
+        # Post zur Datenbank hinzufügen und speichern
+        db.session.add(post)
+        db.session.commit()
+        # Flash-Nachricht anzeigen, dass der Beitrag erfolgreich erstellt wurde
+        flash(_('Your post is now live!'))
+        # Weiterleitung zur Seite mit den Posts des Threads
+        return redirect(url_for('main.thread_posts', id=id))
+    # Alle Posts des Threads abrufen
+    posts = thread.posts.all()
+    # Rendern der Vorlage und Übergeben der Daten an das Template
+    return render_template('thread_posts.html', thread=thread, posts=posts, form=form)
+
+@bp.route('/threads/delete/<int:id>', methods=['POST']) #route zum löschen von threads
+@login_required
+def delete_thread(id):
+    thread = Thread.query.get_or_404(id)
+    # Überprüfen, ob der aktuelle Benutzer ein Admin ist
+    if not current_user.is_admin:
+        flash(_('You are not allowed to delete threads.'))
+        return redirect(url_for('main.index'))
+    db.session.delete(thread)  #Thread löschen 
+    db.session.commit()
+    flash(_('The thread has been deleted.'))
+    return redirect(url_for('main.index'))
+
+@bp.route('/posts/delete/<int:id>', methods=['POST']) #route zum löschen von threads
+@login_required
+def delete_post(id):
+    post = Post.query.get_or_404(id)
+    # Überprüfen, ob der aktuelle Benutzer ein Admin ist
+    if not current_user.is_admin:
+        flash(_('You are not allowed to delete posts.'))
+        return redirect(url_for('main.index'))
+    db.session.delete(post)
+    db.session.commit()
+    flash(_('The post has been deleted.'))
+    return redirect(url_for('main.index'))
 
 @bp.route('/user/<username>')
 @login_required

@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block app_content %}
+    <!-- Page title -->
+    <h1>{{ _('Thread Posts') }}</h1>
+
+    <!-- Displaying the Thread title -->
+    <h2>{{ thread.title }}</h2>
+
+    <!-- Section for displaying the posts -->
+    <div id="posts">
+        <!-- Heading for the list of posts -->
+        <h3>{{ _('Posts') }}</h3>
+        <!-- Unordered list for displaying the posts -->
+        <ul>
+            <!-- Loop through all posts -->
+            {% for post in posts %}
+                <li>
+                    <!-- Display the post body -->
+                    {{ post.body }}
+                    <!-- Check if the current user is an admin to display the delete button for the post -->
+                    {% if current_user.is_admin %}
+                        <!-- Form for deleting the post -->
+                        <!-- The form has a button that sends a POST request to delete the post when clicked -->
+                        <form action="{{ url_for('main.delete_post', id=post.id) }}" method="post">
+                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                        </form>
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+    <!-- Titel für neuen Post -->
+    <h3>{{ _('Create New Post') }}</h3>
+    <!-- HTML-Formular für die Post-Erstellung -->
+    <form method="post">
+        <!-- Flask-WTF-Formular schnell rendern -->
+        {{ wtf.quick_form(form) }}
+    </form>
+{% endblock %}

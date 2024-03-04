@@ -99,6 +99,7 @@ class User(UserMixin, PaginatedAPIMixin, db.Model):
     last_seen = db.Column(db.DateTime, default=datetime.utcnow)
     token = db.Column(db.String(32), index=True, unique=True)
     token_expiration = db.Column(db.DateTime)
+    is_admin = db.Column(db.Boolean, default=False)
     followed = db.relationship(
         'User', secondary=followers,
         primaryjoin=(followers.c.follower_id == id),
@@ -304,6 +305,7 @@ class Thread(db.Model):   #neue Tabelle fuer threads
     creation_date = db.Column(db.DateTime, default=datetime.utcnow)
     last_update = db.Column(db.DateTime, default=datetime.utcnow)
     creator_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    posts = db.relationship('Post', backref='thread', lazy='dynamic')#verknüpfung auf Posts 
 
     def __repr__(self):
         return '<Thread {}>'.format(self.title)
