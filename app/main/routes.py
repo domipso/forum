@@ -10,6 +10,7 @@ from app.main.forms import EditProfileForm, EmptyForm, PostForm, SearchForm, \
 from app.models import User, Post, Message, Notification, Thread
 from app.translate import translate
 from app.main import bp
+from flask import abort
 
 
 @bp.before_app_request
@@ -99,6 +100,26 @@ def delete_post(id):
     db.session.commit()
     flash(_('The post has been deleted.'))
     return redirect(url_for('main.index'))
+
+@bp.route('/admin/users', methods=['GET', 'POST'])
+@login_required
+def admin_users():
+    if not current_user.is_admin:
+        abort(403)  # 403 Fehler, wenn der Benutzer kein Admin ist
+    users = User.query.all()
+    return render_template('show_users.html', users=users)
+
+@bp.route('/admin/users/<int:user_id>/toggle_admin', methods=['POST'])#macht Benutzer zu Admins 
+@login_required
+def toggle_admin(user_id):
+    if not current_user.is_admin:
+        abort(403)  # 403 Fehler, wenn der Benutzer kein Admin ist
+    user = User.query.get_or_404(user_id)
+    user.is_admin = not user.is_admin  # Umkehren des Admin-Status
+    db.session.commit()
+    flash('Admin-Status erfolgreich aktualisiert.')
+    return redirect(url_for('main.admin_users'))
+
 
 @bp.route('/user/<username>')
 @login_required

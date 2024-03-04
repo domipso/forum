@@ -19,7 +19,10 @@
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
                     <li><a href="{{ url_for('main.index') }}">{{ _('Home') }}</a></li>
-                    <li><a href="{{ url_for('main.explore') }}">{{ _('Explore') }}</a></li>
+                     <!-- Add a link to the user admin page -->
+                    {% if current_user.is_admin %}
+                    <li><a href="{{ url_for('main.admin_users') }}">{{ _('User Management') }}</a></li>
+                    {% endif %}
                 </ul>
                 {% if g.search_form %}
                 <form class="navbar-form navbar-left" method="get" action="{{ url_for('main.search') }}">

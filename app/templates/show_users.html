@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block app_content %}
+    <h1>Benutzerübersicht</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Benutzername</th>
+                <th>E-Mail</th>
+                <th>Admin?</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <tr>
+                <td>{{ user.username }}</td>
+                <td>{{ user.email }}</td>
+                <td>
+                    <!-- Formular zum Ändern des Admin-Status -->
+                    <form action="{{ url_for('main.toggle_admin', user_id=user.id) }}" method="POST">
+                        <!-- Checkbox für Admin-Status -->
+                        <input type="checkbox" name="admin" {% if user.is_admin %}checked{% endif %}>
+                        <!-- Submit-Button zum Speichern -->
+                        <input type="submit" value="Speichern">
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
