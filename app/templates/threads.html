@@ -13,6 +13,7 @@
         <ul>
             <!-- Schleife über alle Threads -->
             {% for thread in threads %}
+            {% include '_thread.html' %}
                 <li>
                     <!-- Link zum Anzeigen der Posts dieses Threads -->
                     <!-- Verwendung der Flask-Funktion url_for, um die URL zur Anzeige der Posts zu generieren -->

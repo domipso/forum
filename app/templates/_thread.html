@@ -1,0 +1,27 @@
+<table class="table table-hover">
+    <tr>
+        <td>
+            <!-- Überschrift mit Link zu den Posts dieses Threads -->
+            <h3><a href="{{ url_for('main.thread_posts', id=thread.id) }}">{{ thread.title }}</a></h3>
+            
+            <!-- Überprüfen, ob ein Ersteller vorhanden ist -->
+            {% if thread.creator %}
+                <!-- Anzeigen des Benutzernamens des Erstellers mit Link zum Benutzerprofil -->
+                <p>{{ _('Erstellt von: ') }}
+                    <a href="{{ url_for('main.user', username=thread.creator.username) }}">
+                        {{ thread.creator.username }}
+                    </a>
+                </p>
+            {% else %}
+                <!-- Anzeigen einer Meldung, wenn kein Ersteller vorhanden ist -->
+                <p>{{ _('Erstellt von: Unbekannt') }}</p>
+            {% endif %}
+            
+            <!-- Anzeigen des Erstellungsdatums -->
+            <p>{{ _('Erstellungsdatum: %(date)s', date=thread.creation_date.strftime('%Y-%m-%d %H:%M:%S')) }}</p>
+            
+            <!-- Anzeigen des letzten Aktualisierungsdatums -->
+            <p>{{ _('Letzte Aktualisierung: %(date)s', date=thread.last_update.strftime('%Y-%m-%d %H:%M:%S')) }}</p>
+        </td>
+    </tr>
+</table>
