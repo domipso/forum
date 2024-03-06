@@ -18,10 +18,10 @@
             {% endif %}
             
             <!-- Anzeigen des Erstellungsdatums -->
-            <p>{{ _('Erstellungsdatum: %(date)s', date=thread.creation_date.strftime('%Y-%m-%d %H:%M:%S')) }}</p>
+            <p>{{ _('Erstellungsdatum: %(date)s', date=thread.creation_date.strftime('%Y-%m-%d %H:%M:%S')) }} &nbsp;&nbsp; 
             
             <!-- Anzeigen des letzten Aktualisierungsdatums -->
-            <p>{{ _('Letzte Aktualisierung: %(date)s', date=thread.last_update.strftime('%Y-%m-%d %H:%M:%S')) }}</p>
+           {{ _('Letzte Aktualisierung: %(date)s', date=thread.last_update.strftime('%Y-%m-%d %H:%M:%S')) }}</p>
         </td>
     </tr>
 </table>

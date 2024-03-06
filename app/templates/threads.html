@@ -12,12 +12,8 @@
         <!-- Unsortierte Liste zur Anzeige der Threads -->
         <ul>
             <!-- Schleife über alle Threads -->
-            {% for thread in threads %}
+            {% for thread in threads[::-1] %}
             {% include '_thread.html' %}
-                <li>
-                    <!-- Link zum Anzeigen der Posts dieses Threads -->
-                    <!-- Verwendung der Flask-Funktion url_for, um die URL zur Anzeige der Posts zu generieren -->
-                    <a href="{{ url_for('main.thread_posts', id=thread.id) }}">{{ thread.title }}</a>
                     <!-- Prüfen, ob der Benutzer Admin ist, um die Löschen-Schaltfläche anzuzeigen -->
                     {% if current_user.is_admin %}
                         <!-- Formular zum Löschen des Threads -->
@@ -26,7 +22,6 @@
                             <button type="submit" class="btn btn-danger btn-sm">Delete</button>
                         </form>
                     {% endif %}
-                </li>
             {% endfor %}
         </ul>
     </div>

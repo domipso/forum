@@ -28,7 +28,7 @@ def index():
     form = ThreadForm()
     if form.validate_on_submit():
         #todo add creator_id 
-        thread = Thread(title=form.thread.data)
+        thread = Thread(title=form.thread.data, creator=current_user)
         db.session.add(thread)
         db.session.commit()
         flash(_('Your thread is now live!'))
@@ -66,6 +66,8 @@ def thread_posts(id):
         # Post zur Datenbank hinzufügen und speichern
         db.session.add(post)
         db.session.commit()
+        thread.last_update = datetime.utcnow()          # Aktualisieren des last_update-Attributs des Threads
+        db.session.commit()  # Speichern der Änderungen am Thread
         # Flash-Nachricht anzeigen, dass der Beitrag erfolgreich erstellt wurde
         flash(_('Your post is now live!'))
         # Weiterleitung zur Seite mit den Posts des Threads

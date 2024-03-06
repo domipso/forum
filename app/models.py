@@ -305,6 +305,7 @@ class Thread(db.Model):   #neue Tabelle fuer threads
     creation_date = db.Column(db.DateTime, default=datetime.utcnow)
     last_update = db.Column(db.DateTime, default=datetime.utcnow)
     creator_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    creator = db.relationship('User')  # Verknüpfung auf Users
     posts = db.relationship('Post', backref='thread', lazy='dynamic')#verknüpfung auf Posts 
 
     def __repr__(self):

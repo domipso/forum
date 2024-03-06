@@ -17,9 +17,6 @@
             <!-- Loop through all posts -->
             {% for post in posts %}
                 {% include '_post.html' %}
-                <li>
-                    <!-- Display the post body -->
-                    {{ post.body }}
                     <!-- Check if the current user is an admin to display the delete button for the post -->
                     {% if current_user.is_admin %}
                         <!-- Form for deleting the post -->
@@ -28,7 +25,6 @@
                             <button type="submit" class="btn btn-danger btn-sm">Delete</button>
                         </form>
                     {% endif %}
-                </li>
             {% endfor %}
         </ul>
     </div>
