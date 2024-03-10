@@ -5,9 +5,10 @@
     <table>
         <thead>
             <tr>
-                <th>Benutzername</th>
-                <th>E-Mail</th>
-                <th>Admin?</th>
+                <th>Benutzername</th><!-- Tabellenkopf für den Benutzernamen-->
+                <th>E-Mail</th><!-- Tabellenkopf für die Email-->
+                <th>Admin?</th> <!-- Tabellenkopf für die Admin-Checkbox-->
+                <th>Löschen</th> <!-- Tabellenkopf für die Löschfunktion -->
             </tr>
         </thead>
         <tbody>
@@ -16,12 +17,15 @@
                 <td>{{ user.username }}</td>
                 <td>{{ user.email }}</td>
                 <td>
-                    <!-- Formular zum Ändern des Admin-Status -->
-                    <form action="{{ url_for('main.toggle_admin', user_id=user.id) }}" method="POST">
-                        <!-- Checkbox für Admin-Status -->
-                        <input type="checkbox" name="admin" {% if user.is_admin %}checked{% endif %}>
-                        <!-- Submit-Button zum Speichern -->
-                        <input type="submit" value="Speichern">
+                    <form action="{{ url_for('main.toggle_admin', user_id=user.id) }}" method="POST">  <!-- Formular zum Ändern des Admin-Status -->
+                        <input type="checkbox" name="admin" {% if user.is_admin %}checked{% endif %}> <!-- Checkbox für Admin-Status -->
+                        <input type="submit" value="Speichern"><!-- Submit-Button zum Speichern -->
+                    </form>
+                </td>
+                <td>
+                    <form action="{{ url_for('main.delete_user', user_id=user.id) }}" method="POST"> <!-- Formular zum Löschen des Benutzers -->
+                        <input type="hidden" name="confirmation" value="true"> <!-- Bestätigung des Löschens mittels Popup -->
+                        <input type="submit" value="Löschen" onclick="return confirm('Sind Sie sicher, dass Sie diesen Benutzer löschen möchten?');"> <!-- Bestätigungsnachricht und Button für das Löschen -->
                     </form>
                 </td>
             </tr>

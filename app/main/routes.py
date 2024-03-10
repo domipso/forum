@@ -22,19 +22,18 @@ def before_request():
     g.locale = str(get_locale())
 
 @bp.route('/', methods=['GET', 'POST'])
-@bp.route('/threads', methods=['GET', 'POST'])
+@bp.route('/threads', methods=['GET', 'POST'])#Route wurde auf Threads als Startseite geändert
 @login_required
 def index():
-    form = ThreadForm()
-    if form.validate_on_submit():
-        #todo add creator_id 
-        thread = Thread(title=form.thread.data, creator=current_user)
-        db.session.add(thread)
-        db.session.commit()
-        flash(_('Your thread is now live!'))
-        return redirect(url_for('main.index'))
-    threads = current_user.all_threads()
-    return render_template('threads.html', title=_('Home'), form=form,threads=threads)
+    form = ThreadForm()  # Ein ThreadForm-Objekt wird erstellt, um Formulardaten zu verarbeiten (Daten kommen aus Threads.HTML)
+    if form.validate_on_submit():  # Überprüft, ob das Formular beim Absenden gültig ist
+        thread = Thread(title=form.thread.data, creator=current_user)  # Erstellt einen neuen Thread mit den Formulardaten und dem aktuellen Benutzer als Ersteller
+        db.session.add(thread)  # Fügt den neuen Thread der Datenbank hinzu
+        db.session.commit()  # Commited die ÄNderungen in der Datenbank
+        flash(_('Your thread is now live!'))  # Zeigt die Meldung an
+        return redirect(url_for('main.index'))  # Leitet den Benutzer zur Hauptseite um
+    threads = current_user.all_threads()  # Ruft alle Threads des aktuellen Benutzers ab
+    return render_template('threads.html', title=_('Home'), form=form, threads=threads)  # Zeigt 'threads.html' wieder an
 
 
 @bp.route('/explore')
@@ -54,26 +53,18 @@ def explore():
 
 @bp.route('/threads/<int:id>/posts', methods=['GET', 'POST'])
 @login_required
-def thread_posts(id):
-    # Thread anhand der ID aus der Datenbank abrufen oder 404-Fehler auslösen
-    thread = Thread.query.get_or_404(id)
-    # Erstellen eines PostFormulars
-    form = PostForm()
-    # Überprüfen, ob das Formular erfolgreich übermittelt wurde
-    if form.validate_on_submit():
-        # Erstellen eines neuen Posts aus den Formulardaten
-        post = Post(body=form.post.data, thread_id=id, author=current_user)
-        # Post zur Datenbank hinzufügen und speichern
-        db.session.add(post)
+def thread_posts(id): 
+    thread = Thread.query.get_or_404(id)# Thread anhand der ID aus der Datenbank abrufen oder 404-Fehler auslösen
+    form = PostForm()# Erstellen eines PostFormulars
+    if form.validate_on_submit(): # Überprüfen, ob das Formular erfolgreich übermittelt wurde    
+        post = Post(body=form.post.data, thread_id=id, author=current_user)# Erstellen eines neuen Posts aus den Formulardaten
+        db.session.add(post)# Post zur Datenbank hinzufügen und speichern
         db.session.commit()
-        thread.last_update = datetime.utcnow()          # Aktualisieren des last_update-Attributs des Threads
+        thread.last_update = datetime.utcnow()# Aktualisieren des last_update-Attributs des Threads
         db.session.commit()  # Speichern der Änderungen am Thread
-        # Flash-Nachricht anzeigen, dass der Beitrag erfolgreich erstellt wurde
-        flash(_('Your post is now live!'))
-        # Weiterleitung zur Seite mit den Posts des Threads
-        return redirect(url_for('main.thread_posts', id=id))
-    # Alle Posts des Threads abrufen
-    posts = thread.posts.all()
+        flash(_('Your post is now live!'))# Nachricht anzeigen, dass der Beitrag erfolgreich erstellt wurde
+        return redirect(url_for('main.thread_posts', id=id))# Weiterleitung zur Seite mit den Posts des Threads
+    posts = thread.posts.all()# Alle Posts des Threads abrufen
     # Rendern der Vorlage und Übergeben der Daten an das Template
     return render_template('thread_posts.html', thread=thread, posts=posts, form=form)
 
@@ -111,16 +102,28 @@ def admin_users():
     users = User.query.all()
     return render_template('show_users.html', users=users)
 
-@bp.route('/admin/users/<int:user_id>/toggle_admin', methods=['POST'])#macht Benutzer zu Admins 
+@bp.route('/admin/users/<int:user_id>/toggle_admin', methods=['POST'])#Macht Benutzer zu Admins 
 @login_required
 def toggle_admin(user_id):
     if not current_user.is_admin:
         abort(403)  # 403 Fehler, wenn der Benutzer kein Admin ist
     user = User.query.get_or_404(user_id)
     user.is_admin = not user.is_admin  # Umkehren des Admin-Status
-    db.session.commit()
-    flash('Admin-Status erfolgreich aktualisiert.')
-    return redirect(url_for('main.admin_users'))
+    db.session.commit()#Commitment in der Datenbank 
+    flash('Admin-Status erfolgreich aktualisiert.')# Erfolgsmeldung anzeigen
+    return redirect(url_for('main.admin_users'))# Zurück zur Benutzerübersichtsseite 
+
+@bp.route('/admin/users/delete/<int:user_id>', methods=['POST'])
+@login_required
+def delete_user(user_id):
+    if not current_user.is_admin:
+        abort(403)  # Verweigert den Zugriff, wenn der Benutzer kein Admin ist (sollte nicht einfach so auf die Seite kommen, sicher ist sicher)
+    user = User.query.get_or_404(user_id)  # Den Benutzer anhand der ID suchen oder 404-Fehler auslösen
+    db.session.delete(user)  # Benutzer aus der Datenbank entfernen
+    db.session.commit()  # Änderungen in der Datenbank speichern
+    flash(_('The user has been deleted.'))  # Erfolgsmeldung anzeigen
+    return redirect(url_for('main.admin_users'))  # Zurück zur Benutzerübersichtsseite umleiten
+
 
 
 @bp.route('/user/<username>')

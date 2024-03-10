@@ -150,8 +150,8 @@ class User(UserMixin, PaginatedAPIMixin, db.Model):
         return followed.union(own).order_by(Post.timestamp.desc())
 
     def all_threads(self):
-        threads = Thread.query.all()
-        threads = sorted(threads, key=lambda thread:thread.last_update)
+        threads = Thread.query.all()   #Threads köännen abgefragt werden 
+        threads = sorted(threads, key=lambda thread:thread.last_update) #Sortiert die Threads nach dem letzen Update 
         return threads
 
     def get_reset_password_token(self, expires_in=600):
@@ -300,13 +300,13 @@ class Task(db.Model):
         return job.meta.get('progress', 0) if job is not None else 100
 
 class Thread(db.Model):   #neue Tabelle fuer threads 
-    id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(255))
-    creation_date = db.Column(db.DateTime, default=datetime.utcnow)
+    id = db.Column(db.Integer, primary_key=True)#ID= Primary Key 
+    title = db.Column(db.String(255))#Titel des Threads
+    creation_date = db.Column(db.DateTime, default=datetime.utcnow) 
     last_update = db.Column(db.DateTime, default=datetime.utcnow)
-    creator_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    creator = db.relationship('User')  # Verknüpfung auf Users
-    posts = db.relationship('Post', backref='thread', lazy='dynamic')#verknüpfung auf Posts 
+    creator_id = db.Column(db.Integer, db.ForeignKey('user.id'))#Ersteller des Threads
+    creator = db.relationship('User')  # One to many Verknüpfung auf Users, damit dies in der Route aufgerufne werden kann.
+    posts = db.relationship('Post', backref='thread', lazy='dynamic')# many to many verknüpfung auf Post, damit dies in der Route aufgerufne werden kann.
 
     def __repr__(self):
         return '<Thread {}>'.format(self.title)
