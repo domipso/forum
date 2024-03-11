@@ -2,11 +2,11 @@
 {% import 'bootstrap/wtf.html' as wtf %}
 
 {% block app_content %}
-    <h1>{{ _('Thread-Beiträge') }}</h1>
+    <h1>{{ _('Thread-Posts) }}</h1>
     <h2>{{ thread.title }}</h2> <!-- Anzeige des Thread-Titels -->
 
     <div id="posts"><!-- Bereich zur Anzeige der Beiträge -->
-        <h3>{{ _('Beiträge') }}</h3>
+        <h3>{{ _('Posts') }}</h3>
         <ul> <!--  Liste zur Anzeige der Beiträge -->
             {% for post in posts %}
                 {% include '_post.html' %}                    
@@ -19,7 +19,7 @@
             {% endfor %}
         </ul>
     </div>
-    <h3>{{ _('Neuen Beitrag erstellen') }}</h3>
+    <h3>{{ _('Create a new Post!') }}</h3>
     <form method="post">    <!-- HTML-Formular für die Beitragserstellung -->
         {{ wtf.quick_form(form) }}
     </form>
