@@ -24,7 +24,7 @@ def before_request():
 @bp.route('/threads', methods=['GET', 'POST'])#Route wurde auf Threads als Startseite geändert
 @login_required
 def index():
-    form = ThreadForm()  # Ein ThreadForm-Objekt wird erstellt, um Formulardaten zu verarbeiten (Daten kommen aus Threads.HTML)
+    form = ThreadForm()  # Ein Objekt wird erstellt, um Formulardaten zu verarbeiten (Daten kommen aus Threads.HTML)
     if form.validate_on_submit():  # Überprüft, ob das Formular beim Absenden gültig ist
         thread = Thread(title=form.thread.data, creator=current_user)  # Erstellt einen neuen Thread mit den Formulardaten und dem aktuellen Benutzer als Ersteller
         db.session.add(thread)  # Fügt den neuen Thread der Datenbank hinzu
@@ -76,29 +76,28 @@ def delete_thread(id):
         flash(_('You are not allowed to delete threads.'))
         return redirect(url_for('main.index'))
     db.session.delete(thread)  #Thread löschen 
-    db.session.commit()
-    flash(_('The thread has been deleted.'))
+    db.session.commit()# Speichern der Änderungen in der Datenbank
+    flash(_('The thread has been deleted.'))# Erfolgsmeldung über das Löschen des Threads
     return redirect(url_for('main.index'))
 
-@bp.route('/posts/delete/<int:id>', methods=['POST']) #route zum löschen von threads
+@bp.route('/posts/delete/<int:id>', methods=['POST']) # Route zum Löschen von Posts
 @login_required
 def delete_post(id):
-    post = Post.query.get_or_404(id)
-    # Überprüfen, ob der aktuelle Benutzer ein Admin ist
-    if not current_user.is_admin:
-        flash(_('You are not allowed to delete posts.'))
-        return redirect(url_for('main.index'))
-    db.session.delete(post)
-    db.session.commit()
-    flash(_('The post has been deleted.'))
-    return redirect(url_for('main.index'))
+    post = Post.query.get_or_404(id)  # Abrufen des zu löschenden Beitrags aus der Datenbank oder der Anzeige, dass nichts gefunden wurde. Wird in diesem Setiing jedoch eher selten vorkommen.
+    if not current_user.is_admin: # Überprüfen, ob der aktuelle Benutzer ein Administrator ist
+        flash(_('Du bist nicht berechtigt, Beiträge zu löschen.'))  # Fehlermeldung, falls der Benutzer kein Admin ist
+        return redirect(url_for('main.index'))  # Umleitung zur Startseite
+    db.session.delete(post)  # Löschen des Beitrags aus der Datenbank
+    db.session.commit()  # Speichern der Änderungen in der Datenbank
+    flash(_('The post has been deleted'))  # Erfolgsmeldung über das Löschen des Beitrags
+    return redirect(url_for('main.index'))  # Umleitung zur Startseite nach dem Löschen
 
 @bp.route('/admin/users', methods=['GET', 'POST'])
 @login_required
 def admin_users():
     if not current_user.is_admin:
         abort(403)  # 403 Fehler, wenn der Benutzer kein Admin ist
-    users = User.query.all()
+    users = User.query.all()#Ruft alle Benutzer ab 
     return render_template('show_users.html', users=users)
 
 @bp.route('/admin/users/<int:user_id>/toggle_admin', methods=['POST'])#Macht Benutzer zu Admins 
@@ -109,7 +108,7 @@ def toggle_admin(user_id):
     user = User.query.get_or_404(user_id)
     user.is_admin = not user.is_admin  # Umkehren des Admin-Status
     db.session.commit()#Commitment in der Datenbank 
-    flash('Admin-Status erfolgreich aktualisiert.')# Erfolgsmeldung anzeigen
+    flash('Admin status has been successfuly updated!.')# Erfolgsmeldung anzeigen
     return redirect(url_for('main.admin_users'))# Zurück zur Benutzerübersichtsseite 
 
 @bp.route('/admin/users/delete/<int:user_id>', methods=['POST'])
@@ -120,7 +119,7 @@ def delete_user(user_id):
     user = User.query.get_or_404(user_id)  # Den Benutzer anhand der ID suchen oder 404-Fehler auslösen
     db.session.delete(user)  # Benutzer aus der Datenbank entfernen
     db.session.commit()  # Änderungen in der Datenbank speichern
-    flash(_('The user has been deleted.'))  # Erfolgsmeldung anzeigen
+    flash(_('The user has been deleted'))  # Erfolgsmeldung anzeigen
     return redirect(url_for('main.admin_users'))  # Zurück zur Benutzerübersichtsseite umleiten
 
 

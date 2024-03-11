@@ -1,27 +1,21 @@
 <table class="table table-hover">
     <tr>
         <td>
-            <!-- Überschrift mit Link zu den Posts dieses Threads -->
-            <h3><a href="{{ url_for('main.thread_posts', id=thread.id) }}">{{ thread.title }}</a></h3>
-            
-            <!-- Überprüfen, ob ein Ersteller vorhanden ist -->
-            {% if thread.creator %}
-                <!-- Anzeigen des Benutzernamens des Erstellers mit Link zum Benutzerprofil -->
-                <p>{{ _('Erstellt von: ') }}
-                    <a href="{{ url_for('main.user', username=thread.creator.username) }}">
+            <h3><a href="{{ url_for('main.thread_posts', id=thread.id) }}">{{ thread.title }}</a></h3>   <!-- Überschrift mit Link zu den Posts dieses Threads -->
+            {% if thread.creator %} <!-- Überprüfen, ob ein Ersteller vorhanden ist -->
+                <p>{{ _('Created by: ') }}
+                    <a href="{{ url_for('main.user', username=thread.creator.username) }}">  <!-- Anzeigen des Benutzernamens des Erstellers mit Link zum Benutzerprofil -->
                         {{ thread.creator.username }}
                     </a>
                 </p>
-            {% else %}
-                <!-- Anzeigen einer Meldung, wenn kein Ersteller vorhanden ist -->
-                <p>{{ _('Erstellt von: Unbekannt') }}</p>
-            {% endif %}
+
+            {% else %}               
+                <p>{{ _('Created by: Unknown') }}</p> <!-- Anzeigen einer Meldung, wenn kein Ersteller abgerufen werden kann-->
+            {% endif %}   
+
+            <p>{{ _('Createdate: %(date)s', date=thread.creation_date.strftime('%Y-%m-%d %H:%M:%S')) }} &nbsp;&nbsp; <!-- Anzeigen des Erstellungsdatums -->
             
-            <!-- Anzeigen des Erstellungsdatums -->
-            <p>{{ _('Erstellungsdatum: %(date)s', date=thread.creation_date.strftime('%Y-%m-%d %H:%M:%S')) }} &nbsp;&nbsp; 
-            
-            <!-- Anzeigen des letzten Aktualisierungsdatums -->
-           {{ _('Letzte Aktualisierung: %(date)s', date=thread.last_update.strftime('%Y-%m-%d %H:%M:%S')) }}</p>
+           {{ _('Last edited: %(date)s', date=thread.last_update.strftime('%Y-%m-%d %H:%M:%S')) }}</p> <!-- Anzeigen des letzten Aktualisierungsdatums -->
         </td>
     </tr>
 </table>

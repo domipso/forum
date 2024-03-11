@@ -261,7 +261,7 @@ class Post(SearchableMixin, db.Model):
 
     def __repr__(self):
         return '<Post {}>'.format(self.body)
-    def todict(self):#funktion für API 
+    def todict(self):#Funktion für API zum abrufen der Posts
         x = {
                 "id": self.id,
                 "body": self.body,
