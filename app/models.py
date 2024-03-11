@@ -150,7 +150,7 @@ class User(UserMixin, PaginatedAPIMixin, db.Model):
         return followed.union(own).order_by(Post.timestamp.desc())
 
     def all_threads(self):
-        threads = Thread.query.all()   #Threads köännen abgefragt werden 
+        threads = Thread.query.all()   #Threads können abgefragt werden 
         threads = sorted(threads, key=lambda thread:thread.last_update) #Sortiert die Threads nach dem letzen Update 
         return threads
 
@@ -255,9 +255,21 @@ class Post(SearchableMixin, db.Model):
     thread_id = db.Column(db.Integer, db.ForeignKey('thread.id'))  # Foreign key referenziert auf Thread.id
     language = db.Column(db.String(5))
 
+    def toJSON(self):
+        return json.dumps(self, default=lambda o: o.__dict__, 
+            sort_keys=True, indent=4)
+
     def __repr__(self):
         return '<Post {}>'.format(self.body)
-
+    def todict(self):#funktion für API 
+        x = {
+                "id": self.id,
+                "body": self.body,
+                "timestamp": self.timestamp.strftime('%m/%d/%Y'),
+                "user_id": self.user_id,
+                "thread_id": self.thread_id
+            }
+        return x 
 
 class Message(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -310,3 +322,14 @@ class Thread(db.Model):   #neue Tabelle fuer threads
 
     def __repr__(self):
         return '<Thread {}>'.format(self.title)
+    def todict(self):#funktion für API 
+        x = {
+                "id": self.id,
+                "title": self.title,
+                "creation_date": self.creation_date.strftime('%m/%d/%Y'),
+                "last_update": self.last_update.strftime('%m/%d/%Y'),
+                "creator_id": self.creator_id
+            }
+        return x 
+        
+    

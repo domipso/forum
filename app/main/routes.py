@@ -12,7 +12,6 @@ from app.translate import translate
 from app.main import bp
 from flask import abort
 
-
 @bp.before_app_request
 def before_request():
     if current_user.is_authenticated:
