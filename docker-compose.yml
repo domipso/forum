@@ -9,7 +9,7 @@ services:
         - TZ=Europe/Zurich
     networks:
       vnet_int_forum:
-          ipv4_address: 172.24.0.20   #Vergabe virtuelle interne IP für gunicorn
+          ipv4_address: 172.24.0.20   #Vergabe virtuelle interne IP für gunicorn (für Referenz in global.conf)
     env_file:
         - .env
     build:
@@ -22,7 +22,7 @@ services:
     restart: always
     networks:
       vnet_int_forum:
-          ipv4_address: 172.24.0.10  #Vergabe virtuelle interne IP für nginx  
+          ipv4_address: 172.24.0.10  #Vergabe virtuelle interne IP für nginx  (für Referenz in global.conf)
     ports:
       - 80:80
     volumes:

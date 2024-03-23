@@ -63,7 +63,7 @@ def thread_posts(id):
         db.session.commit()  # Speichern der Änderungen am Thread
         flash(_('Your post is now live!'))# Nachricht anzeigen, dass der Beitrag erfolgreich erstellt wurde
         return redirect(url_for('main.thread_posts', id=id))# Weiterleitung zur Seite mit den Posts des Threads
-    posts = thread.posts.all()# Alle Posts des Threads abrufen
+    posts = thread.posts.all()# Alle Posts des Threads 
     # Rendern der Vorlage und Übergeben der Daten an das Template
     return render_template('thread_posts.html', thread=thread, posts=posts, form=form)
 
